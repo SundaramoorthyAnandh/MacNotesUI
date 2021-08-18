@@ -1,0 +1,24 @@
+.note {
+    height: 300px;
+}
+
+.del-btn {
+    margin-right: 10px;
+    padding: 2px;
+    float: right;
+    font-size: 25px;
+    z-index: 999;
+}
+
+.note-title{
+    padding-right: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: calc(100% - 50px);
+    float: left;
+}
+
+.active-note{
+    background-color: rgb(112, 63, 63);
+}

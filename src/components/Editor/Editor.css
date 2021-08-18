@@ -1,0 +1,19 @@
+.remove-outline{
+    outline:none
+}
+
+.input-font.remove-outline.form-control{
+    height: calc(100vh - 120px);
+    width: 95%;
+    resize: none;
+    border: none;
+}
+
+.input-font.remove-outline.form-control::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .input-font.remove-outline.form-control {
+    -ms-overflow-style: none; 
+    scrollbar-width: none;
+  }

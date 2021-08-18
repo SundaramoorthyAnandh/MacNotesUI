@@ -1,0 +1,100 @@
+.folders {
+    /* background-color: rgb(220, 221, 218); */
+    background-color: rgb(255 255 255 / 46%);
+    height: 100%;
+
+    /* text-align: center; */
+}
+
+.folder {
+    max-height: 100px;
+    min-height: 50px;
+    padding: 8px 0 8px 20px;
+    width: 100%;
+    /* background-color: #ccc; */
+    border: 0px solid;
+    box-sizing: border-box;
+    line-height: 32px;
+    cursor: pointer
+}
+
+.folder .col {
+    line-height:32px;
+}
+
+.folder:hover{
+    background-color: #f1f1f1;
+    font-size: 18px;
+    transition: font-size 0.2s;
+    /* box-shadow: rgba(0, 0, 0, 0.25) 0px 25px 50px -12px; */
+}
+
+.folder.active {
+    font-weight: bold;
+    /* background-color: rgb(76, 166, 226) !important; */
+    background-color: #ccc;
+}
+
+.form-control{
+    padding: 10px 10px;
+    width: calc(100% - 62px);
+    box-sizing: border-box;
+    float: left;
+}
+
+.input-group-append{
+    float: left;
+    margin-left: 5px;
+    width: 39px;
+    height: 39px;
+}
+
+.folders.add-folder + div .folder.row{
+    background-color: #f1f1f1;
+}
+
+.input-group-append  .btn.btn-secondary{
+    width: 39px;
+    height: 39px;
+    font-size: 20px;
+    font-family: 'Varela Round';
+}
+
+.close {
+  position: absolute;
+  font-weight: bold;
+  font-size: 1.4em;
+  padding: 0 0.2em;
+  line-height: 1em;
+  cursor: pointer;
+}
+
+.folders{
+    max-height: calc(100% - 50px);
+    overflow: auto;
+}
+
+.del-btn {
+    margin-right: 10px;
+    padding: 2px;
+    float: right;
+    font-size: 25px;
+}
+
+.del-btn:hover {
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 25px 50px -12px;
+}
+
+.folders::-webkit-scrollbar {
+    display: none;
+}
+
+.folders {
+    -ms-overflow-style: none; 
+    scrollbar-width: none;
+}
+  
+.add-folder{
+    max-height: calc(100% -50px);
+    border-top: 1px #000;
+}
