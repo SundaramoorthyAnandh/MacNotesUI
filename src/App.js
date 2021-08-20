@@ -22,7 +22,9 @@ function App() {
   const [currentFolderId, setCurrentFolderId] = useState(null);
   const [loadingNotes, setLoadingNotes] = useState(false);
   const [searchString, setSearchString] = useState(null);
-  const [hamburgerOpen, setHamburgerOpen] = useState(false)
+  const [hamburgerOpen, setHamburgerOpen] = useState(false);
+  const [isContentEdited, setIsContentEdited] = useState(false);
+  const [editedContent, setEditedContent] = useState({});
 
   useEffect(() => {
     async function getFolders() {
@@ -33,10 +35,22 @@ function App() {
       }
     }
     getFolders();
-  }, [])
+  }, []);
+
+  const handleUpdateOnEvent = async () => {
+    const {
+      content,
+      id,
+      modified_date,
+      fid
+    } = editedContent;
+    await handleContentUpdation(content, id, modified_date, fid);
+    setIsContentEdited(false);
+  }
 
   const fetchFolders = async () => {
     try {
+      if(isContentEdited) await handleUpdateOnEvent();
       const { data: folders } = await axios.get(FOLDERS_URL_WITH_ASC_SORT);
       setFolders(folders);
       await handleSelectFolder(folders[0]["fid"]);
@@ -54,6 +68,7 @@ function App() {
   }
 
   const handleSelectFolder = async (fid) => {
+    if(isContentEdited) await handleUpdateOnEvent();
     if (fid) {
       try {
         setCurrentFolderId(fid);
@@ -65,8 +80,16 @@ function App() {
     }
   }
 
-  const handleNoteSelection = (selectedNote) => {
+  const handleNoteSelection = async (selectedNote) => {
+    if(isContentEdited) await handleUpdateOnEvent();
     setSelectedNote(selectedNote);
+  }
+
+  const handleContentEditing = (status, data) => {
+    setIsContentEdited(status);
+    if(status){
+      setEditedContent(data);
+    }
   }
 
   const handleContentUpdation = async (content, noteId, modified_date, fid) => {
@@ -83,6 +106,7 @@ function App() {
 
   const handleAddFolder = async (data) => {
     try {
+      if(isContentEdited) await handleUpdateOnEvent();
       await axios.post(FOLDERS_BASE_URL, data);
       const { data: _folders } = await axios.get(FOLDERS_URL_WITH_ASC_SORT);
       setFolders(_folders)
@@ -98,6 +122,8 @@ function App() {
   const handleAddNewNote = async () => {
     let notes = await getNotesWithFolderId();
     let latestNotesId = 0;
+
+    if(isContentEdited) await handleUpdateOnEvent();
 
     notes.forEach(note => {
       if (Number(note.id) > latestNotesId) {
@@ -117,7 +143,6 @@ function App() {
   }
 
   const throttle = (func, delay) => {
-
     let flag = true;
     return function () {
       let context = this, args = arguments;
@@ -145,6 +170,7 @@ function App() {
   }
 
   const searchNotes = async (event) => {
+    if(isContentEdited) await handleUpdateOnEvent();
     if (event.target.value && event.target.value.length > 0) {
       const { data: searchedNotes } = await axios.get(SEARCH_NOTES_BASE_URL + event.target.value.trim() + `&fid=${currentFolderId}`);
       setNotes(searchedNotes);
@@ -157,6 +183,7 @@ function App() {
 
   const handleDeleteFolder = async (fid) => {
     try {
+      if(isContentEdited && Number(editedContent.fid) !== Number(fid)) await handleUpdateOnEvent();
       await axios.delete(FOLDERS_BASE_URL + fid);
       const { data: notesLinkedWithFolder } = await axios.get(FETCH_NOTES_BASE_URL + fid);
       notesLinkedWithFolder.forEach(async note => await axios.delete(NOTES_BASE_URL + Number(note.id)));
@@ -169,6 +196,7 @@ function App() {
 
   const handleNoteDeletion = async (noteId) => {
     try {
+      if(isContentEdited && Number(editedContent.id) !== Number(noteId)) await handleUpdateOnEvent();
       await axios.delete(NOTES_BASE_URL + Number(noteId));
       if (Number(noteId) === Number(selectedNote.id)) setSelectedNote({});
       const { data: notes } = await axios.get(FETCH_NOTES_BASE_URL + currentFolderId);
@@ -182,10 +210,9 @@ function App() {
   return (
     <Container >
       <Row style={{ height: "50px", "backgroundColor": "gray" }}>
+
         <Navbar color="faded">
-          {/* { hamburgerOpen ? */}
           <GiHamburgerMenu onClick={() => setHamburgerOpen(!hamburgerOpen)} className={"hamburgerMenu"} />
-          {/* :<GrClose onClick={() => setHamburgerOpen(!hamburgerOpen)} className={"hamburgerMenu"}/>} */}
           <NavbarBrand style={{ "color": "white", "marginLeft": "2px", "padding": "10px", "marginTop": "15px" }}>Mac-Os Notes</NavbarBrand>
           <Button
             onClick={throttleAddNotes}
@@ -198,8 +225,11 @@ function App() {
             onChange={debounceSearch}
           />
         </Navbar>
+
       </Row>
+
       <Row className={"content"}>
+
         <Col lg={2} className={`split split-left ${hamburgerOpen ? "ham-close" : "ham-open"}`}>
           <Folders
             foldersList={folders}
@@ -209,6 +239,7 @@ function App() {
             deleteFolder={handleDeleteFolder}
           />
         </Col>
+
         <Col lg={4} className="split split-center">
           <Notes
             loading={loadingNotes}
@@ -219,9 +250,15 @@ function App() {
             deleteNote={handleNoteDeletion}
           />
         </Col>
+
         <Col lg={6} className="split split-right">
-          <Editor selectedNote={selectedNote} updateContent={handleContentUpdation} />
+          <Editor 
+          selectedNote={selectedNote} 
+          updateContent={handleContentUpdation} 
+          isContentEdited={handleContentEditing}
+          />
         </Col>
+        
       </Row>
     </Container>
   );
