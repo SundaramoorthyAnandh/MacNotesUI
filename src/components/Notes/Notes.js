@@ -27,9 +27,8 @@ function Notes({ notes, selectNote, loading, deleteNote }) {
                 title = note.content.substr(0, note.content.indexOf(" ") > -1 ? note.content.indexOf(" ") : note.content.length);
             } else title = "Untitled Notes"
 
-            return <>
+            return <React.Fragment key={note.id}>
                 <div
-                    key={note.id}
                     style={{
                         padding: "10px 5px",
                         borderBottom: "1px solid #dbdbd7",
@@ -73,7 +72,7 @@ function Notes({ notes, selectNote, loading, deleteNote }) {
                         </Col>
                     </Row>
                 </div>
-            </>
+            </React.Fragment>
         });
     }
 
