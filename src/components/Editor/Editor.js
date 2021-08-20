@@ -1,9 +1,8 @@
 import React, { Fragment, useEffect, useState } from 'react';
-// import EditorJs from 'react-editor-js';
 import { Input } from 'reactstrap';
 import "./Editor.css"
 
-function Editor({ selectedNote, updateContent }) {
+function Editor({ selectedNote, updateContent, isContentEdited }) {
     const [noteDetails, setNoteDetails] = useState({});
     const [content, setContent] = useState("");
 
@@ -26,12 +25,13 @@ function Editor({ selectedNote, updateContent }) {
                     value={content}
                     onChange={(e) => {
                         setContent(e.target.value);
+                        isContentEdited(true, {
+                            content: e.target.value,
+                            id: noteDetails.id,
+                            modified_date:  Date.now().toString(),
+                            fid: noteDetails.fid
+                        });
                     }}
-                    onKeyPress={
-                        e => {
-                            if (e.key === "Enter") updateContent(content, noteDetails.id, Date.now().toString(), noteDetails.fid)
-                        }
-                    }
                 />
 
             </div>
