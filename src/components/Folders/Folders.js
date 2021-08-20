@@ -73,7 +73,7 @@ function Folders({ foldersList, selectFolder, addFolder, currentFolder, deleteFo
                                         maxLength={30}
                                         placeholder={"Enter New Folder's Name"}
                                         onKeyPress={async e => {
-                                            if (e.key.toLowerCase() === "enter") {
+                                            if (e.key.toLowerCase() === "enter" && e.target.value && e.target.value.length) {
                                                 setAddNewFolder(false);
                                                 await addFolder({
                                                     fid: (Number(latestId) + 1).toString(),
