@@ -2,10 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { TiDelete } from 'react-icons/ti';
 import { Col, Row, Spinner } from 'reactstrap';
 
-function Notes({ notes, selectNote, loading, deleteNote }) {
+function Notes({ notes, selectedFolder, selectNote, loading, deleteNote }) {
 
     const [notesList, setNotesList] = useState([]);
-    const [currentNote, setCurrentNote] = useState(null)
+    const [currentNote, setCurrentNote] = useState(null);
+    
+    useEffect(() => {
+        setCurrentNote(null);
+    },[selectedFolder]);
 
     useEffect(() => {
         notes.sort((a, b) => Number(b.modified_date) - Number(a.modified_date));
